@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useInterval } from "../utils/use-interval";
 
-export default function Home() {
+const HomePage = () => {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [messageId, setMessageId] = useState("");
@@ -114,4 +114,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default HomePage;

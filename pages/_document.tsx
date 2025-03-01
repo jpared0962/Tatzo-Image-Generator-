@@ -41,7 +41,7 @@ class MyDocument extends Document {
           <meta property="og:title" content="Dall-E 2 AI Image Generator" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content="Dall-E 2 AI Image Generator" />
-          <link rel="stylesheet" href="/styles/stylesheet.css" />
+          {/* Remove any manually included stylesheets here */}
         </Head>
         <body className="bg-gray-100">
           <Main />
