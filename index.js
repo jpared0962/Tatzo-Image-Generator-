@@ -1,8 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
-const SUPABASE_URL = 'https://pobytzknxtqijlebvqzb.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvYnl0emtueHRxaWpsZWJ2cXpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NzIwOTIsImV4cCI6MjA1NjM0ODA5Mn0.UaQP86giG3BYqrT413vIZZB9zl97mgKl2nHb32Qi66o';
+import 'dotenv/config';
+import OpenAI from "openai";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL || 'https://pobytzknxtqijlebvqzb.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function testConnection() {
   const { data, error } = await supabase.from('your_table_name').select('*');
@@ -15,8 +18,6 @@ async function testConnection() {
 }
 
 testConnection();
-import 'dotenv/config';
-import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY // Load API key from .env file

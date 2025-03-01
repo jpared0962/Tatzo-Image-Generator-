@@ -1,11 +1,19 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import OpenAI from "openai";
-import fs from 'fs';
+import * as fs from 'fs';
 import fetch from 'node-fetch';
 
+console.log("Using OpenAI API Key:", process.env.OPENAI_API_KEY?.substring(0, 10) + "********");
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY || ""
 });
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("Missing OPENAI_API_KEY in .env file!");
+}
 
 async function generateImage() {
   try {
@@ -34,3 +42,4 @@ async function generateImage() {
 }
 
 generateImage();
+
