@@ -7,6 +7,10 @@ export default async function handler(
 ) {
   const { id }: any = req.query;
 
+  if (!id) {
+    return res.status(400).json({ message: "Missing id parameter" });
+  }
+
   try {
     const data = await redis.get(id);
     if (!data) return res.status(404).json({ message: "No data found" });
