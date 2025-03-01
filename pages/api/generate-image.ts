@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-const QSTASH = `https://qstash.upstash.io/v1/publish/`;
-const DALL_E = "https://api.openai.com/v1/images/generations";
-const VERCEL_URL = "https://dalle-2-jade.vercel.app";
+
+const QSTASH = process.env.QSTASH_URL || `https://qstash.upstash.io`;
+const DALL_E = process.env.DALL_E_URL || "https://api.openai.com/v1/images/generations";
+const VERCEL_URL = process.env.VERCEL_URL || "https://vercel.com/jose-alvarados-projects-9bde703d/dall-e/DtLPXu1WimYvPsvijPtnfDaiW6Ma";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +14,6 @@ export default async function handler(
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
-        // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "upstash-forward-Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
         "Upstash-Callback": `${VERCEL_URL}/api/callback`,
