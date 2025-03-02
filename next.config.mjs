@@ -1,5 +1,6 @@
-// filepath: /Users/joseparedes/Documents/GitHub/dall-e/next.config.mjs
-export default {
+module.exports = {
   reactStrictMode: true,
-  // Add any other Next.js configuration options here
+  images: {
+    domains: ["oaidalleapiprodscus.blob.core.windows.net"],
+  },  
 };
