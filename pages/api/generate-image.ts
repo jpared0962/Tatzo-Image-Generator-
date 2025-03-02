@@ -1,39 +1,35 @@
-import 'dotenv/config';
 import { NextApiRequest, NextApiResponse } from "next";
-import OpenAI from "openai";
-import fs from 'fs';
-import fetch from 'node-fetch';
+const QSTASH = `https://qstash.upstash.io/v1/publish/`;
+const DALL_E = "https://api.openai.com/v1/images/generations";
+const VERCEL_URL = "https://dalle-2-jade.vercel.app";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { prompt } = req.query;
-
   try {
-    const response = await openai.images.generate({
-      prompt: prompt as string,
-      n: 1,
-      size: "1024x1024"
+    const response = await fetch(`${QSTASH + DALL_E}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
+        // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "upstash-forward-Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+        "Upstash-Callback": `${VERCEL_URL}/api/callback`,
+      },
+      body: JSON.stringify({
+        prompt,
+        n: 1,
+        size: "1024x1024",
+        response_format: "b64_json",
+      }),
     });
-
-    if (!response || !response.data || response.data.length === 0) {
-      throw new Error("No image URL returned from OpenAI API.");
-    }
-
-    const imageUrl = response.data[0].url;
-    console.log("Generated Image URL:", imageUrl);
-
-    // Fetch and save the image
-    const imageResponse = await fetch(imageUrl);
-    const buffer = await imageResponse.arrayBuffer();
-    fs.writeFileSync("public/generated_image.png", Buffer.from(buffer));
-
-    console.log("Image saved as public/generated_image.png");
-    res.status(200).json({ message: "Image generated successfully", url: imageUrl });
+    const json = await response.json();
+    return res.status(202).json({ id: json.messageId });
   } catch (error) {
-    console.error("Error generating image:", error);
-    res.status(500).json({ message: error.message });
+    return res
+      .status(500)
+      .json({ message: error.message, type: "Internal server error" });
   }
 }
