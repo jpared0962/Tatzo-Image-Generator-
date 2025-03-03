@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useInterval } from "../utils/use-interval";
+import TattooQuestionnaire from "../components/TattooQuestionnaire";
 
 const HomePage = () => {
   const [prompt, setPrompt] = useState("");
@@ -110,6 +111,10 @@ const HomePage = () => {
               )}
             ></div>
           </div>
+        </div>
+        <div>
+          <h1>Interactive Tattoo Designer</h1>
+          <TattooQuestionnaire />
         </div>
       </div>
     </>
