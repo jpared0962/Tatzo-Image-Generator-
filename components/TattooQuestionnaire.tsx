@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import styles from './TattooQuestionnaire.module.css';
 
 const questions = [
   "What style of tattoo do you prefer? (e.g., traditional, tribal, watercolor)",
@@ -12,10 +13,11 @@ export default function TattooQuestionnaire() {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
+  const [error, setError] = useState("");
 
-  const handleAnswer = () => {
+  const handleAnswer = useCallback(() => {
     if (!input.trim()) return;
-    
+
     const newAnswers = [...answers, input.trim()];
     setAnswers(newAnswers);
     setInput("");
@@ -24,36 +26,36 @@ export default function TattooQuestionnaire() {
     if (nextStep < questions.length) {
       setCurrentStep(nextStep);
     } else {
-      // All questions answered; generate image.
       generateImage(newAnswers);
     }
-  };
+  }, [input, answers, currentStep, generateImage]);
 
-  const generateImage = async (answers: string[]) => {
+  const generateImage = useCallback(async (answers: string[]) => {
     setLoading(true);
-    // You could customize how the prompt is built. For this example:
-    const prompt = `A tattoo design inspired by the following preferences: ${answers.join(
-      ", "
-    )}`;
+    setError("");
+    const prompt = `A tattoo design inspired by the following preferences: ${answers.join(", ")}`;
     try {
       const res = await fetch(`/api/generateImage?prompt=${encodeURIComponent(prompt)}`);
       const data = await res.json();
       if (data.imageUrl) {
         setImageUrl(data.imageUrl);
+      } else {
+        setError("Failed to generate image");
       }
     } catch (err) {
+      setError("Failed to generate image. Please try again.");
       console.error("Failed to generate image:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+    <div className={styles.container}>
       {imageUrl ? (
         <div>
           <h2>Your Tattoo Design</h2>
-          <img src={imageUrl} alt="Generated Tattoo Design" style={{ maxWidth: "100%" }} />
+          <img src={imageUrl} alt="Generated Tattoo Design" className={styles.image} />
         </div>
       ) : (
         <div>
@@ -62,13 +64,14 @@ export default function TattooQuestionnaire() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your answer..."
-            style={{ padding: "8px", width: "80%" }}
+            className={styles.input}
           />
           <br />
-          <button onClick={handleAnswer} style={{ padding: "8px 16px", marginTop: "12px" }}>
+          <button onClick={handleAnswer} className={styles.button}>
             Next
           </button>
           {loading && <p>Generating your tattoo design...</p>}
+          {error && <p className={styles.error}>{error}</p>}
         </div>
       )}
     </div>
