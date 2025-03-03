@@ -9,11 +9,10 @@ export default async function handler(
 ) {
   const { prompt } = req.query;
   try {
-    const response = await fetch(`${QSTASH + DALL_E}`, {
+    const response = await fetch(`${QSTASH}${DALL_E}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.QSTASH_TOKEN}`,
-        // Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "upstash-forward-Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
         "Upstash-Callback": `${VERCEL_URL}/api/callback`,
